@@ -11,7 +11,7 @@ public class Chapter02Manager : MonoBehaviour
     private TextMeshProUGUI _statusText;
 
     private readonly List<AsyncOperationHandle<GameObject>> _handles = new();
-    private readonly List<(GameObject go, AsyncOperationHandle<GameObject> source)> _instances = new();
+    private readonly List<GameObject> _instances = new();
 
     private void Start()
     {
@@ -58,10 +58,9 @@ public class Chapter02Manager : MonoBehaviour
             _log.Log("没有可用 Handle，请先点「加载」");
             return;
         }
-        var handle = _handles[_handles.Count - 1];
-        var go = Instantiate(handle.Result);
+        var go = Instantiate(_handles[_handles.Count - 1].Result);
         go.transform.position = Random.insideUnitSphere * 3f;
-        _instances.Add((go, handle));
+        _instances.Add(go);
         _log.Log($"Instantiate 完成  实例数: {_instances.Count}");
         RefreshStatus();
     }
@@ -69,27 +68,31 @@ public class Chapter02Manager : MonoBehaviour
     private void OnReleaseHandleClick()
     {
         if (_handles.Count == 0) { _log.Log("没有 Handle 可释放"); return; }
-        int released = 0, skipped = 0;
-        for (int i = _handles.Count - 1; i >= 0; i--)
+        // 有实例时必须保留至少 1 个 handle，否则引用计数归零导致资源卸载、实例材质丢失
+        int mustKeep = _instances.Count > 0 ? 1 : 0;
+        int canRelease = _handles.Count - mustKeep;
+        if (canRelease <= 0)
         {
-            int dependent = 0;
-            foreach (var t in _instances) if (t.source.Equals(_handles[i])) dependent++;
-            if (dependent > 0) { skipped++; continue; }
+            _log.Log($"⚠ 实例存活时至少保留 1 个 Handle，请先全部「销毁实例」再释放");
+            return;
+        }
+        for (int i = _handles.Count - 1; i >= mustKeep; i--)
+        {
             Addressables.Release(_handles[i]);
             _handles.RemoveAt(i);
-            released++;
         }
-        if (released > 0) _log.Log($"Release ✓  释放了 {released} 个 Handle，剩余: {_handles.Count}");
-        if (skipped > 0) _log.Log($"⚠ 跳过 {skipped} 个 Handle（仍有实例依赖，请先销毁）");
+        _log.Log($"Release ✓ 释放了 {canRelease} 个 Handle，剩余: {_handles.Count}");
+        if (_instances.Count > 0)
+            _log.Log($"  → 保留 1 个 Handle 维持 {_instances.Count} 个实例所需的引用计数");
         RefreshStatus();
     }
 
     private void OnDestroyInstanceClick()
     {
         if (_instances.Count == 0) { _log.Log("没有实例可销毁"); return; }
-        var (go, _) = _instances[_instances.Count - 1];
+        var last = _instances[_instances.Count - 1];
         _instances.RemoveAt(_instances.Count - 1);
-        Destroy(go);
+        Destroy(last);
         _log.Log($"Destroy(gameObject) ✓  剩余实例: {_instances.Count}");
         _log.Log("  → 注意: Destroy 不会释放 Handle，需要单独 Release");
         RefreshStatus();
@@ -103,7 +106,7 @@ public class Chapter02Manager : MonoBehaviour
 
     private void OnDestroy()
     {
-        foreach (var (go, _) in _instances) if (go != null) Destroy(go);
+        foreach (var go in _instances) if (go != null) Destroy(go);
         foreach (var h in _handles) if (h.IsValid()) Addressables.Release(h);
     }
 }
