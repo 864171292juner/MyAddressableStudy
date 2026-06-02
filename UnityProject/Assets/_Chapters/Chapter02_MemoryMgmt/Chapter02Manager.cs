@@ -83,7 +83,11 @@ public class Chapter02Manager : MonoBehaviour
         }
         _log.Log($"Release ✓ 释放了 {canRelease} 个 Handle，剩余: {_handles.Count}");
         if (_instances.Count > 0)
+        {
             _log.Log($"  → 保留 1 个 Handle 维持 {_instances.Count} 个实例所需的引用计数");
+            _log.Log($"  ※ 此处简化成立的前提：所有 Handle 加载的是同一资产");
+            _log.Log($"  ※ 多种资产混用时需按资产分组、每组各保留 1 个");
+        }
         RefreshStatus();
     }
 
