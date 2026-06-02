@@ -75,7 +75,7 @@ public class Chapter04Manager : MonoBehaviour
         {
             if (h.Status == AsyncOperationStatus.Succeeded)
             {
-                _remoteInstance = Instantiate(h.Result, Vector3.up * 2f, Quaternion.identity);
+                _remoteInstance = Instantiate(h.Result, Vector3.zero, Quaternion.identity);
                 _log.Log($"Remote 资源加载成功 ✓ {h.Result.name}");
             }
             else
@@ -89,7 +89,8 @@ public class Chapter04Manager : MonoBehaviour
     {
         if (_remoteInstance != null) Destroy(_remoteInstance);
         if (_remoteHandle.IsValid()) Addressables.Release(_remoteHandle);
-        _log.Log("Remote 资源已清理，Handle 已释放");
+        Caching.ClearCache();
+        _log.Log("Remote 资源已清理，Handle 已释放，本地 bundle 缓存已清空");
     }
 
     private void OnDestroy()
