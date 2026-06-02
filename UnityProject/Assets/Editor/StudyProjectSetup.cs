@@ -129,9 +129,7 @@ public static class StudyProjectSetup
 
     static AddressableAssetGroup GetOrCreateGroup(AddressableAssetSettings s, string name, bool remote)
     {
-        var g = s.FindGroup(name);
-        if (g != null) return g;
-        g = s.CreateGroup(name, false, false, false, null,
+        var g = s.FindGroup(name) ?? s.CreateGroup(name, false, false, false, null,
             typeof(ContentUpdateGroupSchema),
             typeof(BundledAssetGroupSchema));
         if (remote)
