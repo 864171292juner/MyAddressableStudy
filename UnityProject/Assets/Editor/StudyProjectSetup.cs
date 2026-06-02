@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.TextCore.Text;
 
 public static class StudyProjectSetup
 {
@@ -75,7 +76,7 @@ public static class StudyProjectSetup
             return null;
         }
 
-        fa = TMP_FontAsset.CreateFontAsset(font, 90, 9, GlyphRenderMode.SDFAA, 512, 512, AtlasPopulationMode.Dynamic);
+        fa = TMP_FontAsset.CreateFontAsset(font, 90, 9, TMP_FontAsset.GlyphRenderMode.SDFAA, 512, 512, TMP_FontAsset.AtlasPopulationMode.Dynamic);
         fa.name = "ChineseDynamic";
         AssetDatabase.CreateAsset(fa, assetPath);
         AssetDatabase.SaveAssets();
