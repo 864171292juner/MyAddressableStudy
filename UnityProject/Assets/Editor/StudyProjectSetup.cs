@@ -48,7 +48,7 @@ public static class StudyProjectSetup
         }
 
         EnsureDir("Assets/_Shared/Fonts");
-        fa = TMP_FontAsset.CreateFontAsset(font);
+        var fa = TMP_FontAsset.CreateFontAsset(font);
         fa.name = "ChineseDynamic";
         AssetDatabase.CreateAsset(fa, assetPath);
 
@@ -340,6 +340,7 @@ public static class StudyProjectSetup
         floorGo.name = "Floor";
         var matPath = path.Replace(".unity", "_Mat.mat");
         var mat = new Material(Shader.Find("Standard")) { color = bgColor };
+        AssetDatabase.DeleteAsset(matPath);
         AssetDatabase.CreateAsset(mat, matPath);
         floorGo.GetComponent<Renderer>().sharedMaterial = mat;
 
