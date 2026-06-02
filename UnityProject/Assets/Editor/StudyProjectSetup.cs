@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.TextCore.Text;
 
 public static class StudyProjectSetup
 {
@@ -35,52 +34,25 @@ public static class StudyProjectSetup
 
     static TMP_FontAsset EnsureChineseFontAsset()
     {
+        const string fontPath = "Assets/Fonts/Pingfang-PuHuiTi-Regular.ttf";
         const string assetPath = "Assets/_Shared/Fonts/ChineseDynamic.asset";
+
         var fa = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(assetPath);
         if (fa != null) return fa;
 
-        EnsureDir("Assets/_Shared/Fonts");
-
-        var candidates = new[] {
-            "/System/Library/Fonts/PingFang.ttc",
-            "/Library/Fonts/Arial Unicode.ttf",
-            "C:\\Windows\\Fonts\\msyh.ttc",
-            "C:\\Windows\\Fonts\\simhei.ttf",
-            "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
-        };
-
-        string found = null;
-        foreach (var c in candidates)
-            if (File.Exists(c)) { found = c; break; }
-
-        if (found == null)
-        {
-            Debug.LogWarning("[StudyUnity] No CJK font found on this machine. Chinese text will not render. See Docs/00_Overview.md for manual setup.");
-            return null;
-        }
-
-        var dstName = "ChineseFont" + Path.GetExtension(found);
-        var dstAssetPath = "Assets/_Shared/Fonts/" + dstName;
-        var dstFull = Path.Combine(Application.dataPath, "_Shared/Fonts/" + dstName);
-
-        if (!File.Exists(dstFull))
-        {
-            File.Copy(found, dstFull);
-            AssetDatabase.ImportAsset(dstAssetPath);
-        }
-
-        var font = AssetDatabase.LoadAssetAtPath<Font>(dstAssetPath);
+        var font = AssetDatabase.LoadAssetAtPath<Font>(fontPath);
         if (font == null)
         {
-            Debug.LogWarning($"[StudyUnity] Failed to import font at {dstAssetPath}. Try importing it manually.");
+            Debug.LogWarning($"[StudyUnity] Font not found at {fontPath}");
             return null;
         }
 
-        fa = TMP_FontAsset.CreateFontAsset(font, 90, 9, TMP_FontAsset.GlyphRenderMode.SDFAA, 512, 512, TMP_FontAsset.AtlasPopulationMode.Dynamic);
+        EnsureDir("Assets/_Shared/Fonts");
+        fa = TMP_FontAsset.CreateFontAsset(font);
         fa.name = "ChineseDynamic";
         AssetDatabase.CreateAsset(fa, assetPath);
         AssetDatabase.SaveAssets();
-        Debug.Log($"[StudyUnity] Chinese TMP font created (Dynamic) from: {found}");
+        Debug.Log("[StudyUnity] Chinese TMP font asset created from Pingfang-PuHuiTi-Regular.ttf");
         return fa;
     }
 
