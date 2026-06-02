@@ -68,8 +68,7 @@ public class Chapter02Manager : MonoBehaviour
     private void OnReleaseHandleClick()
     {
         if (_handles.Count == 0) { _log.Log("没有 Handle 可释放"); return; }
-        if (_instances.Count > 0)
-            _log.Log($"  ⚠ 警告: 场景中仍有 {_instances.Count} 个实例！先 Destroy 再 Release 才安全");
+        if (_instances.Count > 0) { _log.Log($"⚠ 请先「销毁实例」再释放 Handle，否则实例材质会丢失"); return; }
         var last = _handles[_handles.Count - 1];
         _handles.RemoveAt(_handles.Count - 1);
         Addressables.Release(last);

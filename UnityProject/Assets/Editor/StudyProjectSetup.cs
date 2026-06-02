@@ -291,8 +291,8 @@ public static class StudyProjectSetup
         Txt(canvas, "Title", "Chapter 02 — Handle 与内存管理", new Vector2(0, 0.92f), Vector2.one, 32);
         Btn(canvas, "加载 (LoadAssetAsync)", new Vector2(0, 0.78f), new Vector2(0.5f, 0.92f));
         Btn(canvas, "实例化 (Instantiate)", new Vector2(0.5f, 0.78f), new Vector2(1f, 0.92f));
-        Btn(canvas, "释放 Handle (Release)", new Vector2(0f, 0.64f), new Vector2(0.5f, 0.78f));
-        Btn(canvas, "销毁实例 (Destroy)", new Vector2(0.5f, 0.64f), new Vector2(1f, 0.78f));
+        Btn(canvas, "销毁实例 (Destroy)", new Vector2(0f, 0.64f), new Vector2(0.5f, 0.78f));
+        Btn(canvas, "释放 Handle (Release)", new Vector2(0.5f, 0.64f), new Vector2(1f, 0.78f));
         Btn(canvas, "清空日志", new Vector2(0.3f, 0.5f), new Vector2(0.7f, 0.64f));
         Txt(canvas, "StatusText", "Handle 数: 0    实例数: 0", new Vector2(0, 0.36f), new Vector2(1f, 0.5f), 24);
 
