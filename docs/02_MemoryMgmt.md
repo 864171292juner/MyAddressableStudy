@@ -10,10 +10,10 @@
 
 打开 `Chapter02Scene`，按 Play，按照以下顺序点按钮：
 
-1. 点「加载」3次 → Handle 数: 3
-2. 点「实例化」→ Cube 出现
-3. 点「销毁实例」→ Cube 消失，但注意日志："Destroy 不会释放 Handle"
-4. 点「释放 Handle」→ Handle 数 -1
+1. 点「加载 (LoadAssetAsync)」3次 → Handle 数: 3
+2. 点「实例化 (Instantiate)」→ Cube 出现
+3. 点「销毁实例 (Destroy)」→ Cube 消失，但注意日志："Destroy 不会释放 Handle"
+4. 点「释放 Handle (Release)」→ Handle 数 -1
 
 ## 关键概念：引用计数
 
