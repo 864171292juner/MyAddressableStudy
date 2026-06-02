@@ -37,8 +37,8 @@ public static class StudyProjectSetup
         const string fontPath = "Assets/Fonts/Pingfang-PuHuiTi-Regular.ttf";
         const string assetPath = "Assets/_Shared/Fonts/ChineseDynamic.asset";
 
-        var fa = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(assetPath);
-        if (fa != null) return fa;
+        // Always recreate to avoid stale atlas textures from previous runs
+        AssetDatabase.DeleteAsset(assetPath);
 
         var font = AssetDatabase.LoadAssetAtPath<Font>(fontPath);
         if (font == null)
@@ -51,6 +51,19 @@ public static class StudyProjectSetup
         fa = TMP_FontAsset.CreateFontAsset(font);
         fa.name = "ChineseDynamic";
         AssetDatabase.CreateAsset(fa, assetPath);
+
+        // Atlas texture and material must be saved as sub-assets or they get destroyed on domain reload
+        foreach (var tex in fa.atlasTextures)
+        {
+            tex.name = "ChineseDynamic Atlas";
+            AssetDatabase.AddObjectToAsset(tex, fa);
+        }
+        if (fa.material != null)
+        {
+            fa.material.name = "ChineseDynamic Material";
+            AssetDatabase.AddObjectToAsset(fa.material, fa);
+        }
+
         AssetDatabase.SaveAssets();
         Debug.Log("[StudyUnity] Chinese TMP font asset created from Pingfang-PuHuiTi-Regular.ttf");
         return fa;
