@@ -143,7 +143,6 @@ public static class StudyProjectSetup
         scaler.referenceResolution = new Vector2(1920, 1080);
         canvasGo.AddComponent<GraphicRaycaster>();
 
-        EditorSceneManager.SaveScene(scene, savePath);
         return (scene, canvasGo);
     }
 

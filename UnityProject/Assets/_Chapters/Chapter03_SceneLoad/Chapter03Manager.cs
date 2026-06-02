@@ -85,4 +85,10 @@ public class Chapter03Manager : MonoBehaviour
             ? "当前已加载子场景: （无）"
             : "当前已加载子场景: " + string.Join(", ", _loaded.Keys);
     }
+
+    private void OnDestroy()
+    {
+        foreach (var handle in _loaded.Values)
+            Addressables.UnloadSceneAsync(handle);
+    }
 }

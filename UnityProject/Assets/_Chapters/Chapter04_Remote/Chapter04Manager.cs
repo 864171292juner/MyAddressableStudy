@@ -68,6 +68,7 @@ public class Chapter04Manager : MonoBehaviour
 
     private void OnLoadRemoteClick()
     {
+        if (_remoteHandle.IsValid()) { _log.Log("Remote 资源已加载，请先「清理」再重新加载"); return; }
         _log.Log("LoadAssetAsync<GameObject>(\"RemoteCube\") 从 OSS 加载...");
         _remoteHandle = Addressables.LoadAssetAsync<GameObject>("RemoteCube");
         _remoteHandle.Completed += h =>

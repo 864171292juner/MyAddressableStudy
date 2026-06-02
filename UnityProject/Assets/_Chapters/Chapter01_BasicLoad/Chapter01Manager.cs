@@ -31,6 +31,7 @@ public class Chapter01Manager : MonoBehaviour
 
     private void OnLoadCubeClick()
     {
+        if (_cubeHandle.IsValid()) { _log.Log("Cube 已加载，请先「清理场景」再重新加载"); return; }
         _log.Log("LoadAssetAsync<GameObject>(\"DemoCube\") 开始...");
         _cubeHandle = Addressables.LoadAssetAsync<GameObject>("DemoCube");
         _cubeHandle.Completed += h =>
@@ -49,6 +50,7 @@ public class Chapter01Manager : MonoBehaviour
 
     private void OnLoadSpriteClick()
     {
+        if (_spriteHandle.IsValid()) { _log.Log("Sprite 已加载，请先「清理场景」再重新加载"); return; }
         _log.Log("LoadAssetAsync<Sprite>(\"DemoSprite\") 开始...");
         _spriteHandle = Addressables.LoadAssetAsync<Sprite>("DemoSprite");
         _spriteHandle.Completed += h =>
