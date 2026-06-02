@@ -38,7 +38,7 @@ public class Chapter01Manager : MonoBehaviour
         {
             if (h.Status == AsyncOperationStatus.Succeeded)
             {
-                _cubeInstance = Instantiate(h.Result, Vector3.zero, Quaternion.identity);
+                _cubeInstance = Instantiate(h.Result, new Vector3(-3f, 0f, 0f), Quaternion.identity);
                 _log.Log($"成功 ✓ 已实例化: {h.Result.name}");
             }
             else
