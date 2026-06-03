@@ -92,7 +92,7 @@ public static class StudyProjectSetup
     static void MakeCubePrefab(string prefabPath, string matPath, Color color)
     {
         if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null) return;
-        var mat = new Material(Shader.Find("Standard")) { color = color };
+        var mat = new Material(Shader.Find("Unlit/Color")) { color = color };
         AssetDatabase.CreateAsset(mat, matPath);
         var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
         go.GetComponent<Renderer>().sharedMaterial = mat;
