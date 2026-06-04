@@ -91,6 +91,8 @@ public class Chapter05Manager : MonoBehaviour
             else
             {
                 _log.Log($"加载失败 ✗ {h.OperationException?.Message}");
+                Addressables.Release(_loadHandle);
+                _loadHandle = default;
             }
         };
     }
@@ -113,6 +115,7 @@ public class Chapter05Manager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (_downloadHandle.IsValid()) Addressables.Release(_downloadHandle);
         if (_loadHandle.IsValid()) Addressables.Release(_loadHandle);
     }
 }
