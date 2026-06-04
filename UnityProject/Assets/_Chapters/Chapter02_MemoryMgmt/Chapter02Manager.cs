@@ -96,7 +96,7 @@ public class Chapter02Manager : MonoBehaviour
         if (_instances.Count == 0) { _log.Log("没有实例可销毁"); return; }
         var last = _instances[_instances.Count - 1];
         _instances.RemoveAt(_instances.Count - 1);
-        Destroy(last);
+        DestroyImmediate(last);
         _log.Log($"Destroy(gameObject) ✓  剩余实例: {_instances.Count}");
         _log.Log("  → 注意: Destroy 不会释放 Handle，需要单独 Release");
         RefreshStatus();

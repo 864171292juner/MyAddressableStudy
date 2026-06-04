@@ -52,7 +52,9 @@ public class Chapter01Manager : MonoBehaviour
     {
         if (_spriteHandle.IsValid()) { _log.Log("Sprite 已加载，请先「清理场景」再重新加载"); return; }
         _log.Log("LoadAssetAsync<Sprite>(\"DemoSprite\") 开始...");
-        _spriteHandle = Addressables.LoadAssetAsync<Sprite>("DemoSprite");
+        // 注意：这里按照address加载和按照label加载的区别，按照address加载是按照地址加载，按照label加载是按照Catalog 里的 entry 顺序里的第一个，不能靠名称顺序。
+        // _spriteHandle = Addressables.LoadAssetAsync<Sprite>("DemoSprite1");//按照address加载
+        _spriteHandle = Addressables.LoadAssetAsync<Sprite>("Label1_Sprites");//按照label加载，加载Catalog 里的 entry 顺序里的第一个，不能靠名称顺序。
         _spriteHandle.Completed += h =>
         {
             if (h.Status == AsyncOperationStatus.Succeeded)

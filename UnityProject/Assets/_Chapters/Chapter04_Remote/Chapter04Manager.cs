@@ -14,11 +14,16 @@ public class Chapter04Manager : MonoBehaviour
     private void Start()
     {
         _log = FindObjectOfType<DebugLogPanel>();
+        _log.Log($"Cache 路径: {Caching.defaultCache.path}");
+
+        Addressables.ResourceManager.WebRequestOverride = req =>
+            _log.Log($"[HTTP] {req.url}");
 
         WireButton("检查 Catalog 更新", OnCheckCatalogClick);
         WireButton("更新 Catalog", OnUpdateCatalogClick);
         WireButton("加载 Remote 资源", OnLoadRemoteClick);
         WireButton("清理", OnClearClick);
+        WireButton("清除 Bundle 缓存", OnClearBundleCacheClick);
         WireButton("清空日志", () => _log.Clear());
     }
 
@@ -69,19 +74,30 @@ public class Chapter04Manager : MonoBehaviour
     private void OnLoadRemoteClick()
     {
         if (_remoteHandle.IsValid()) { _log.Log("Remote 资源已加载，请先「清理」再重新加载"); return; }
-        _log.Log("LoadAssetAsync<GameObject>(\"RemoteCube\") 从 OSS 加载...");
-        _remoteHandle = Addressables.LoadAssetAsync<GameObject>("RemoteCube");
-        _remoteHandle.Completed += h =>
+
+        Addressables.GetDownloadSizeAsync("RemoteCube").Completed += sizeHandle =>
         {
-            if (h.Status == AsyncOperationStatus.Succeeded)
+            long size = sizeHandle.Result;
+            _log.Log(size == 0
+                ? "Bundle 已在本地磁盘缓存，从本地加载"
+                : $"Bundle 未缓存，将从 CDN 下载 ({size} bytes)");
+            Addressables.Release(sizeHandle);
+
+            _remoteHandle = Addressables.LoadAssetAsync<GameObject>("RemoteCube");
+            _remoteHandle.Completed += h =>
             {
-                _remoteInstance = Instantiate(h.Result, Vector3.zero, Quaternion.identity);
-                _log.Log($"Remote 资源加载成功 ✓ {h.Result.name}");
-            }
-            else
-            {
-                _log.Log($"失败 ✗ {h.OperationException?.Message}");
-            }
+                if (h.Status == AsyncOperationStatus.Succeeded)
+                {
+                    _remoteInstance = Instantiate(h.Result, Vector3.zero, Quaternion.identity);
+                    _log.Log($"加载成功 ✓ {h.Result.name}");
+                }
+                else
+                {
+                    _log.Log($"失败 ✗ {h.OperationException?.Message}");
+                    var inner = h.OperationException?.InnerException;
+                    while (inner != null) { _log.Log($"  内部错误: {inner.Message}"); inner = inner.InnerException; }
+                }
+            };
         };
     }
 
@@ -89,8 +105,15 @@ public class Chapter04Manager : MonoBehaviour
     {
         if (_remoteInstance != null) Destroy(_remoteInstance);
         if (_remoteHandle.IsValid()) Addressables.Release(_remoteHandle);
-        Caching.ClearCache();
-        _log.Log("Remote 资源已清理，Handle 已释放，本地 bundle 缓存已清空");
+        _log.Log("实例已销毁，Handle 已释放（Bundle 磁盘缓存保留）");
+    }
+
+    private void OnClearBundleCacheClick()
+    {
+        bool cleared = Caching.ClearCache();
+        _log.Log(cleared
+            ? "Bundle 磁盘缓存已清除 ✓ 下次加载将从 CDN 重新下载"
+            : "清除失败 — 可能有 Bundle 正在被使用，先「清理」再试");
     }
 
     private void OnDestroy()

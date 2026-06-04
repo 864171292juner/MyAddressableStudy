@@ -16,7 +16,12 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 05344337849844e748d4cf756c44151e
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: a1a0e29d2be0c46db82b41912d9b950a
+    m_Address: RemoteCubeMat1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0d7d6718ccbed4b4d8ceb15117a98211, type: 2}
   m_SchemaSet:

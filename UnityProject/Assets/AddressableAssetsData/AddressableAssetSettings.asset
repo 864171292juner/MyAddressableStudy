@@ -15,9 +15,9 @@ MonoBehaviour:
   m_DefaultGroup: 05344337849844e748d4cf756c44151e
   m_currentHash:
     serializedVersion: 2
-    Hash: 018ee95e690ad9c8e7743c9da40a6ea3
+    Hash: 31f808fb294aaeb3972decdf41722da5
   m_OptimizeCatalogSize: 0
-  m_BuildRemoteCatalog: 0
+  m_BuildRemoteCatalog: 1
   m_BundleLocalCatalog: 0
   m_CatalogRequestsTimeout: 0
   m_DisableCatalogUpdateOnStart: 0
@@ -45,7 +45,10 @@ MonoBehaviour:
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
   - {fileID: 11400000, guid: 0dd8b055e372349fc831551cceb7230e, type: 2}
+  - {fileID: 11400000, guid: 87d8cec7d842a40729b3fc6351c2533b, type: 2}
+  - {fileID: 11400000, guid: 29373ee3423c6441f8a4ab52a0320cb8, type: 2}
   - {fileID: 11400000, guid: 03675284afac14d87939399e95fb6825, type: 2}
+  - {fileID: 11400000, guid: 0b6c18b75659f4df6a332d201535d06c, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -66,7 +69,7 @@ MonoBehaviour:
       - m_Id: 45fa63337cbb74e49a923da625230eda
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
       - m_Id: a7f0a768fb6f148459c93b20a85b3d3c
-        m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+        m_Value: https://static0.xesimg.com/addressables/Data
     m_ProfileEntryNames:
     - m_Id: 1ee7c0e40c6f04fc0b138689d1ba7aad
       m_Name: Remote.BuildPath
@@ -87,6 +90,7 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - Label1_Sprites
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: dc26ced3b8bd0473e88e6f82a66e2a44, type: 2}

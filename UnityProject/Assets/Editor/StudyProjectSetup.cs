@@ -361,7 +361,8 @@ public static class StudyProjectSetup
         Btn(canvas, "更新 Catalog", new Vector2(0.5f, 0.78f), new Vector2(1f, 0.92f));
         Btn(canvas, "加载 Remote 资源", new Vector2(0f, 0.64f), new Vector2(0.5f, 0.78f));
         Btn(canvas, "清理", new Vector2(0.5f, 0.64f), new Vector2(1f, 0.78f));
-        Btn(canvas, "清空日志", new Vector2(0.3f, 0.5f), new Vector2(0.7f, 0.64f));
+        Btn(canvas, "清除 Bundle 缓存", new Vector2(0f, 0.5f), new Vector2(0.5f, 0.64f));
+        Btn(canvas, "清空日志", new Vector2(0.5f, 0.5f), new Vector2(1f, 0.64f));
 
         AddLogPanel(canvas);
 

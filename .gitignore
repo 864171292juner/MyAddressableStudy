@@ -1,0 +1,34 @@
+# Unity generated
+UnityProject/Library/
+UnityProject/Temp/
+UnityProject/Obj/
+UnityProject/Logs/
+UnityProject/UserSettings/
+UnityProject/MemoryCaptures/
+UnityProject/Recordings/
+
+# Unity build output
+UnityProject/Build/
+UnityProject/Builds/
+
+# Visual Studio / Rider
+UnityProject/*.csproj
+UnityProject/*.sln
+UnityProject/*.unityproj
+UnityProject/.vscode/
+UnityProject/.idea/
+UnityProject/obj/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Addressables build output (upload to CDN separately)
+UnityProject/ServerData/
+
+# Crash dumps
+UnityProject/mono_crash.*.json
+
+# Output folder
+OutPut/
+memory/

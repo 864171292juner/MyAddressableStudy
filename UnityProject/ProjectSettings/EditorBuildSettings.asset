@@ -4,6 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Chapters/Chapter04_Remote/Chapter04Scene.unity
+    guid: b84ca394d937743cd93f71e40258ccc6
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 7d5d439ef41ae40cdb87cf53cc20dd7e, type: 2}
