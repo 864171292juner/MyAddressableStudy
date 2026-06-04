@@ -28,7 +28,7 @@ public static class StudyProjectSetup
         CreateChapter02Scene();
         CreateChapter03Scenes();
         CreateChapter04Scene();
-        // CreateChapter05Scene() 在 Task 3 添加
+        CreateChapter05Scene();
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         Debug.Log("[StudyUnity] Setup complete! Open any chapter scene and press Play.");
@@ -403,6 +403,27 @@ public static class StudyProjectSetup
 
         new GameObject("Chapter04Manager").AddComponent<Chapter04Manager>();
         EditorSceneManager.SaveScene(scene, "Assets/_Chapters/Chapter04_Remote/Chapter04Scene.unity");
+    }
+
+    // ── Chapter 05 ────────────────────────────────────────────────
+
+    static void CreateChapter05Scene()
+    {
+        var (scene, canvas) = NewScene("Assets/_Chapters/Chapter05_PreDownload/Chapter05Scene.unity");
+
+        Txt(canvas, "Title", "Chapter 05 — 预下载流程", new Vector2(0, 0.92f), Vector2.one, 32);
+        Btn(canvas, "检查下载大小",     new Vector2(0f,   0.78f), new Vector2(0.5f, 0.92f));
+        Btn(canvas, "预下载",          new Vector2(0.5f,  0.78f), new Vector2(1f,   0.92f));
+        Btn(canvas, "加载资产",         new Vector2(0f,   0.64f), new Vector2(0.5f, 0.78f));
+        Btn(canvas, "清理",            new Vector2(0.5f,  0.64f), new Vector2(1f,   0.78f));
+        Btn(canvas, "清除 Bundle 缓存", new Vector2(0f,   0.5f),  new Vector2(0.5f, 0.64f));
+        Btn(canvas, "清空日志",         new Vector2(0.5f,  0.5f),  new Vector2(1f,   0.64f));
+        Txt(canvas, "ProgressText", "下载进度: --", new Vector2(0, 0.36f), new Vector2(1f, 0.5f), 24);
+
+        AddLogPanel(canvas);
+
+        new GameObject("Chapter05Manager").AddComponent<Chapter05Manager>();
+        EditorSceneManager.SaveScene(scene, "Assets/_Chapters/Chapter05_PreDownload/Chapter05Scene.unity");
     }
 
     // ── Utilities ─────────────────────────────────────────────────
