@@ -20,13 +20,15 @@ public static class StudyProjectSetup
     [MenuItem("StudyUnity/Setup All Chapters")]
     public static void SetupAll()
     {
-        _chineseFont = EnsureChineseFontAsset();   // ← add this line
+        _chineseFont = EnsureChineseFontAsset();
         CreateDemoAssets();
+        CreateChapter05Assets();      // ← 新增，必须在 ConfigureAddressables 之前
         ConfigureAddressables();
         CreateChapter01Scene();
         CreateChapter02Scene();
         CreateChapter03Scenes();
         CreateChapter04Scene();
+        // CreateChapter05Scene() 在 Task 3 添加
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         Debug.Log("[StudyUnity] Setup complete! Open any chapter scene and press Play.");
@@ -89,6 +91,23 @@ public static class StudyProjectSetup
             new Color(1f, 0.3f, 0.2f));
     }
 
+    static void CreateChapter05Assets()
+    {
+        EnsureDir("Assets/_Chapters/Chapter05_PreDownload/DemoAssets");
+        MakeCubePrefab(
+            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeA.prefab",
+            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeAMat.mat",
+            new Color(1f, 0.5f, 0f));   // 橙色
+        MakeCubePrefab(
+            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeB.prefab",
+            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeBMat.mat",
+            new Color(0.6f, 0.2f, 0.8f)); // 紫色
+        MakeCubePrefab(
+            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeC.prefab",
+            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeCMat.mat",
+            new Color(0.2f, 0.8f, 0.3f)); // 绿色
+    }
+
     static void MakeCubePrefab(string prefabPath, string matPath, Color color)
     {
         if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null) return;
@@ -119,12 +138,18 @@ public static class StudyProjectSetup
     static void ConfigureAddressables()
     {
         var s = AddressableAssetSettingsDefaultObject.GetSettings(true);
-        var local = GetOrCreateGroup(s, LocalGroup, remote: false);
+        var local  = GetOrCreateGroup(s, LocalGroup,  remote: false);
         var remote = GetOrCreateGroup(s, RemoteGroup, remote: true);
+        var ch05   = GetOrCreateGroup(s, "Chapter05Remote", remote: true);
 
-        Tag(s, "Assets/_Chapters/Chapter01_BasicLoad/DemoAssets/DemoCube.prefab", "DemoCube", local);
-        Tag(s, "Assets/_Chapters/Chapter01_BasicLoad/DemoAssets/DemoSprite.png", "DemoSprite", local);
-        Tag(s, "Assets/_Chapters/Chapter04_Remote/DemoAssets/RemoteCube.prefab", "RemoteCube", remote);
+        Tag(s, "Assets/_Chapters/Chapter01_BasicLoad/DemoAssets/DemoCube.prefab",  "DemoCube",   local);
+        Tag(s, "Assets/_Chapters/Chapter01_BasicLoad/DemoAssets/DemoSprite.png",   "DemoSprite", local);
+        Tag(s, "Assets/_Chapters/Chapter04_Remote/DemoAssets/RemoteCube.prefab",   "RemoteCube", remote);
+
+        s.AddLabel("Chapter05"); // 已存在时无副作用
+        TagAndLabel(s, "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeA.prefab", "Ch05CubeA", ch05, "Chapter05");
+        TagAndLabel(s, "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeB.prefab", "Ch05CubeB", ch05, "Chapter05");
+        TagAndLabel(s, "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeC.prefab", "Ch05CubeC", ch05, "Chapter05");
     }
 
     static AddressableAssetGroup GetOrCreateGroup(AddressableAssetSettings s, string name, bool remote)
@@ -147,6 +172,16 @@ public static class StudyProjectSetup
         if (string.IsNullOrEmpty(guid)) { Debug.LogWarning($"[StudyUnity] Asset not found: {assetPath}"); return; }
         var entry = s.CreateOrMoveEntry(guid, group, false, false);
         entry.address = address;
+    }
+
+    static void TagAndLabel(AddressableAssetSettings s, string assetPath, string address,
+        AddressableAssetGroup group, string label)
+    {
+        var guid = AssetDatabase.AssetPathToGUID(assetPath);
+        if (string.IsNullOrEmpty(guid)) { Debug.LogWarning($"[StudyUnity] Asset not found: {assetPath}"); return; }
+        var entry = s.CreateOrMoveEntry(guid, group, false, false);
+        entry.address = address;
+        entry.SetLabel(label, true, true);
     }
 
     // ── Scene Helpers ─────────────────────────────────────────────
