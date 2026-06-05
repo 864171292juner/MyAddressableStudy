@@ -133,8 +133,10 @@ public static class StudyProjectSetup
 
         var loadedTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texPath);
         var mat = new Material(Shader.Find("Unlit/Texture"));
-        mat.mainTexture = loadedTex;
         AssetDatabase.CreateAsset(mat, matPath);
+        // 必须在 CreateAsset 之后设置跨资产引用，再 SetDirty，否则引用不会被序列化
+        mat.mainTexture = loadedTex;
+        EditorUtility.SetDirty(mat);
 
         var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
         go.GetComponent<Renderer>().sharedMaterial = mat;
