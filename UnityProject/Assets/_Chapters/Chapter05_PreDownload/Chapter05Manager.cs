@@ -79,6 +79,7 @@ public class Chapter05Manager : MonoBehaviour
         if (_loadHandle.IsValid()) { _log.Log("资产已加载，请先「清理」再重新加载"); return; }
         _log.Log("LoadAssetsAsync<GameObject>(\"Chapter05\") 开始...");
         _loadHandle = Addressables.LoadAssetsAsync<GameObject>("Chapter05", null);
+        StartCoroutine(TrackLoadProgress(_loadHandle));
         _loadHandle.Completed += h =>
         {
             if (h.Status == AsyncOperationStatus.Succeeded)
@@ -97,11 +98,24 @@ public class Chapter05Manager : MonoBehaviour
         };
     }
 
+    private IEnumerator TrackLoadProgress(AsyncOperationHandle<IList<GameObject>> handle)
+    {
+        while (!handle.IsDone)
+        {
+            if (_progressText != null)
+                _progressText.text = $"加载进度: {handle.PercentComplete * 100:F0}%";
+            yield return null;
+        }
+        if (_progressText != null)
+            _progressText.text = "加载进度: 100%";
+    }
+
     private void OnClearClick()
     {
         foreach (var inst in _instances) Destroy(inst);
         _instances.Clear();
         if (_loadHandle.IsValid()) Addressables.Release(_loadHandle);
+        _loadHandle = default;
         _log.Log("实例已销毁，Handle 已释放");
     }
 

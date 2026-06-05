@@ -93,19 +93,11 @@ public static class StudyProjectSetup
 
     static void CreateChapter05Assets()
     {
-        EnsureDir("Assets/_Chapters/Chapter05_PreDownload/DemoAssets");
-        MakeCubePrefab(
-            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeA.prefab",
-            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeAMat.mat",
-            new Color(1f, 0.5f, 0f));   // 橙色
-        MakeCubePrefab(
-            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeB.prefab",
-            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeBMat.mat",
-            new Color(0.6f, 0.2f, 0.8f)); // 紫色
-        MakeCubePrefab(
-            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeC.prefab",
-            "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeCMat.mat",
-            new Color(0.2f, 0.8f, 0.3f)); // 绿色
+        const string dir = "Assets/_Chapters/Chapter05_PreDownload/DemoAssets";
+        EnsureDir(dir);
+        MakeCubePrefabWithTex(dir + "/Ch05CubeA.prefab", dir + "/Ch05CubeAMat.mat", dir + "/Ch05CubeATex.png", new Color(1f, 0.5f, 0f));
+        MakeCubePrefabWithTex(dir + "/Ch05CubeB.prefab", dir + "/Ch05CubeBMat.mat", dir + "/Ch05CubeBTex.png", new Color(0.6f, 0.2f, 0.8f));
+        MakeCubePrefabWithTex(dir + "/Ch05CubeC.prefab", dir + "/Ch05CubeCMat.mat", dir + "/Ch05CubeCTex.png", new Color(0.2f, 0.8f, 0.3f));
     }
 
     static void MakeCubePrefab(string prefabPath, string matPath, Color color)
@@ -113,6 +105,37 @@ public static class StudyProjectSetup
         if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null) return;
         var mat = new Material(Shader.Find("Unlit/Color")) { color = color };
         AssetDatabase.CreateAsset(mat, matPath);
+        var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go.GetComponent<Renderer>().sharedMaterial = mat;
+        PrefabUtility.SaveAsPrefabAsset(go, prefabPath);
+        Object.DestroyImmediate(go);
+    }
+
+    // 创建带 2048×2048 噪点纹理的 Cube Prefab，让 bundle 足够大以演示下载进度
+    static void MakeCubePrefabWithTex(string prefabPath, string matPath, string texPath, Color tint, int texSize = 2048)
+    {
+        AssetDatabase.DeleteAsset(prefabPath);
+        AssetDatabase.DeleteAsset(matPath);
+        AssetDatabase.DeleteAsset(texPath);
+
+        var tex = new Texture2D(texSize, texSize, TextureFormat.RGBA32, false);
+        var pixels = new Color[texSize * texSize];
+        var rng = new System.Random(texPath.GetHashCode());
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            float n = 0.7f + (float)rng.NextDouble() * 0.3f;
+            pixels[i] = new Color(tint.r * n, tint.g * n, tint.b * n, 1f);
+        }
+        tex.SetPixels(pixels);
+        File.WriteAllBytes(texPath, tex.EncodeToPNG());
+        Object.DestroyImmediate(tex);
+        AssetDatabase.ImportAsset(texPath);
+
+        var loadedTex = AssetDatabase.LoadAssetAtPath<Texture2D>(texPath);
+        var mat = new Material(Shader.Find("Unlit/Texture"));
+        mat.mainTexture = loadedTex;
+        AssetDatabase.CreateAsset(mat, matPath);
+
         var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
         go.GetComponent<Renderer>().sharedMaterial = mat;
         PrefabUtility.SaveAsPrefabAsset(go, prefabPath);
@@ -418,7 +441,7 @@ public static class StudyProjectSetup
         Btn(canvas, "清理",            new Vector2(0.5f,  0.64f), new Vector2(1f,   0.78f));
         Btn(canvas, "清除 Bundle 缓存", new Vector2(0f,   0.5f),  new Vector2(0.5f, 0.64f));
         Btn(canvas, "清空日志",         new Vector2(0.5f,  0.5f),  new Vector2(1f,   0.64f));
-        Txt(canvas, "ProgressText", "下载进度: --", new Vector2(0, 0.36f), new Vector2(1f, 0.5f), 24);
+        Txt(canvas, "ProgressText", "进度: --", new Vector2(0, 0.36f), new Vector2(1f, 0.5f), 24);
 
         AddLogPanel(canvas);
 
