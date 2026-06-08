@@ -23,12 +23,16 @@ public static class StudyProjectSetup
         _chineseFont = EnsureChineseFontAsset();
         CreateDemoAssets();
         CreateChapter05Assets();      // ← 新增，必须在 ConfigureAddressables 之前
+        CreateChapter09Assets();      // ← Ch09，必须在 ConfigureAddressables 之前
         ConfigureAddressables();
         CreateChapter01Scene();
         CreateChapter02Scene();
         CreateChapter03Scenes();
         CreateChapter04Scene();
         CreateChapter05Scene();
+        CreateChapter06Scene();
+        CreateChapter07Scene();
+        CreateChapter09Scene();
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         Debug.Log("[StudyUnity] Setup complete! Open any chapter scene and press Play.");
@@ -98,6 +102,15 @@ public static class StudyProjectSetup
         MakeCubePrefabWithTex(dir + "/Ch05CubeA.prefab", dir + "/Ch05CubeAMat.mat", dir + "/Ch05CubeATex.png", new Color(1f, 0.5f, 0f));
         MakeCubePrefabWithTex(dir + "/Ch05CubeB.prefab", dir + "/Ch05CubeBMat.mat", dir + "/Ch05CubeBTex.png", new Color(0.6f, 0.2f, 0.8f));
         MakeCubePrefabWithTex(dir + "/Ch05CubeC.prefab", dir + "/Ch05CubeCMat.mat", dir + "/Ch05CubeCTex.png", new Color(0.2f, 0.8f, 0.3f));
+    }
+
+    static void CreateChapter09Assets()
+    {
+        const string dir = "Assets/_Chapters/Chapter09_MergeMode/DemoAssets";
+        EnsureDir(dir);
+        MakeCubePrefab(dir + "/Ch09CubeAlpha.prefab", dir + "/Ch09CubeAlphaMat.mat", new Color(0.9f, 0.2f, 0.2f));
+        MakeCubePrefab(dir + "/Ch09CubeBeta.prefab",  dir + "/Ch09CubeBetaMat.mat",  new Color(1f,   0.85f, 0f));
+        MakeCubePrefab(dir + "/Ch09CubeGamma.prefab", dir + "/Ch09CubeGammaMat.mat", new Color(0.2f, 0.4f,  0.9f));
     }
 
     static void MakeCubePrefab(string prefabPath, string matPath, Color color)
@@ -175,6 +188,13 @@ public static class StudyProjectSetup
         TagAndLabel(s, "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeA.prefab", "Ch05CubeA", ch05, "Chapter05");
         TagAndLabel(s, "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeB.prefab", "Ch05CubeB", ch05, "Chapter05");
         TagAndLabel(s, "Assets/_Chapters/Chapter05_PreDownload/DemoAssets/Ch05CubeC.prefab", "Ch05CubeC", ch05, "Chapter05");
+
+        s.AddLabel("SetA");
+        s.AddLabel("SetB");
+        TagAndLabel(s, "Assets/_Chapters/Chapter09_MergeMode/DemoAssets/Ch09CubeAlpha.prefab", "Ch09CubeAlpha", local, "SetA");
+        TagAndLabel(s, "Assets/_Chapters/Chapter09_MergeMode/DemoAssets/Ch09CubeBeta.prefab",  "Ch09CubeBeta",  local, "SetA");
+        TagAndLabel(s, "Assets/_Chapters/Chapter09_MergeMode/DemoAssets/Ch09CubeBeta.prefab",  "Ch09CubeBeta",  local, "SetB");
+        TagAndLabel(s, "Assets/_Chapters/Chapter09_MergeMode/DemoAssets/Ch09CubeGamma.prefab", "Ch09CubeGamma", local, "SetB");
     }
 
     static AddressableAssetGroup GetOrCreateGroup(AddressableAssetSettings s, string name, bool remote)
@@ -207,6 +227,18 @@ public static class StudyProjectSetup
         var entry = s.CreateOrMoveEntry(guid, group, false, false);
         entry.address = address;
         entry.SetLabel(label, true, true);
+    }
+
+    static void SetAssetReferenceField(Object component, string fieldName, string assetPath)
+    {
+        if (component == null) { Debug.LogWarning($"[StudyUnity] Component is null for field: {fieldName}"); return; }
+        var guid = AssetDatabase.AssetPathToGUID(assetPath);
+        if (string.IsNullOrEmpty(guid)) { Debug.LogWarning($"[StudyUnity] Asset not found: {assetPath}"); return; }
+        var so = new SerializedObject(component);
+        var prop = so.FindProperty(fieldName);
+        if (prop == null) { Debug.LogWarning($"[StudyUnity] Field not found: {fieldName}"); return; }
+        prop.FindPropertyRelative("m_AssetGUID").stringValue = guid;
+        so.ApplyModifiedProperties();
     }
 
     // ── Scene Helpers ─────────────────────────────────────────────
@@ -449,6 +481,70 @@ public static class StudyProjectSetup
 
         new GameObject("Chapter05Manager").AddComponent<Chapter05Manager>();
         EditorSceneManager.SaveScene(scene, "Assets/_Chapters/Chapter05_PreDownload/Chapter05Scene.unity");
+    }
+
+    // ── Chapter 06 ────────────────────────────────────────────────
+
+    static void CreateChapter06Scene()
+    {
+        var (scene, canvas) = NewScene("Assets/_Chapters/Chapter06_AssetReference/Chapter06Scene.unity");
+
+        Txt(canvas, "Title", "Chapter 06 — AssetReference", new Vector2(0, 0.92f), Vector2.one, 32);
+        Btn(canvas, "字符串加载",     new Vector2(0f,   0.78f), new Vector2(0.5f, 0.92f));
+        Btn(canvas, "AssetRef 加载",  new Vector2(0.5f, 0.78f), new Vector2(1f,   0.92f));
+        Btn(canvas, "清理",           new Vector2(0f,   0.64f), new Vector2(0.5f, 0.78f));
+        Btn(canvas, "清空日志",        new Vector2(0.5f, 0.64f), new Vector2(1f,   0.78f));
+
+        AddLogPanel(canvas);
+
+        var managerGo = new GameObject("Chapter06Manager");
+        var manager = managerGo.AddComponent<Chapter06Manager>();
+        SetAssetReferenceField(manager, "_cubeRef",
+            "Assets/_Chapters/Chapter01_BasicLoad/DemoAssets/DemoCube.prefab");
+
+        EditorSceneManager.SaveScene(scene,
+            "Assets/_Chapters/Chapter06_AssetReference/Chapter06Scene.unity");
+    }
+
+    // ── Chapter 07 ────────────────────────────────────────────────
+
+    static void CreateChapter07Scene()
+    {
+        var (scene, canvas) = NewScene("Assets/_Chapters/Chapter07_AsyncAwait/Chapter07Scene.unity");
+
+        Txt(canvas, "Title", "Chapter 07 — async/await", new Vector2(0, 0.92f), Vector2.one, 32);
+        Btn(canvas, "回调方式加载",      new Vector2(0f,   0.78f), new Vector2(0.5f, 0.92f));
+        Btn(canvas, "async/await 加载",  new Vector2(0.5f, 0.78f), new Vector2(1f,   0.92f));
+        Btn(canvas, "清理",              new Vector2(0f,   0.64f), new Vector2(0.5f, 0.78f));
+        Btn(canvas, "清空日志",           new Vector2(0.5f, 0.64f), new Vector2(1f,   0.78f));
+        Txt(canvas, "StatusText", "状态: 就绪", new Vector2(0, 0.36f), new Vector2(1f, 0.5f), 24);
+
+        AddLogPanel(canvas);
+
+        new GameObject("Chapter07Manager").AddComponent<Chapter07Manager>();
+        EditorSceneManager.SaveScene(scene,
+            "Assets/_Chapters/Chapter07_AsyncAwait/Chapter07Scene.unity");
+    }
+
+    // ── Chapter 09 ────────────────────────────────────────────────
+
+    static void CreateChapter09Scene()
+    {
+        var (scene, canvas) = NewScene("Assets/_Chapters/Chapter09_MergeMode/Chapter09Scene.unity");
+
+        Txt(canvas, "Title", "Chapter 09 — 多 Key + MergeMode", new Vector2(0, 0.92f), Vector2.one, 30);
+        Btn(canvas, "加载 SetA",               new Vector2(0f,   0.78f), new Vector2(0.5f, 0.92f));
+        Btn(canvas, "加载 SetB",               new Vector2(0.5f, 0.78f), new Vector2(1f,   0.92f));
+        Btn(canvas, "Union(SetA|SetB)",        new Vector2(0f,   0.64f), new Vector2(0.5f, 0.78f));
+        Btn(canvas, "Intersection(SetA∩SetB)", new Vector2(0.5f, 0.64f), new Vector2(1f,   0.78f));
+        Btn(canvas, "清理",                    new Vector2(0f,   0.5f),  new Vector2(0.5f, 0.64f));
+        Btn(canvas, "清空日志",                 new Vector2(0.5f, 0.5f),  new Vector2(1f,   0.64f));
+
+        AddLogPanel(canvas);
+
+        new GameObject("Chapter09Manager").AddComponent<Chapter09Manager>();
+        EditorSceneManager.SaveScene(scene,
+            "Assets/_Chapters/Chapter09_MergeMode/Chapter09Scene.unity");
     }
 
     // ── Utilities ─────────────────────────────────────────────────

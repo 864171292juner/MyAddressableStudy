@@ -17,8 +17,18 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 05344337849844e748d4cf756c44151e
   m_SerializeEntries:
+  - m_GUID: 676690cbb906a438ebb8dfc001eba614
+    m_Address: Assets/_Chapters/Chapter06_AssetReference/bgm.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a1a0e29d2be0c46db82b41912d9b950a
     m_Address: RemoteCubeMat1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc341a4d3f4ea40c98ee20ce646cdf72
+    m_Address: Assets/_Chapters/Chapter01_BasicLoad/DemoAssets/Sprite1.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

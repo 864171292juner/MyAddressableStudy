@@ -27,16 +27,29 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2dde65867e0404d3f891397139fcdae6
+    m_Address: Ch09CubeBeta
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SetA
+    - SetB
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30ecf73930fac44bb819a84e8e031bc9
     m_Address: SubSceneB
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: bc341a4d3f4ea40c98ee20ce646cdf72
-    m_Address: DemoSprite1
+  - m_GUID: 3403fa7adfaee4e0ea43ce147413f267
+    m_Address: Ch09CubeAlpha
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Label1_Sprites
+    - SetA
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9476b90db7086444fa0b68f67f63e0f4
+    m_Address: Ch09CubeGamma
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SetB
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f0d76a1472e894f23b3b045a6c9eddd3
     m_Address: DemoSprite
